@@ -7,8 +7,8 @@
         }
     },
     "require": {
-        "php": ">7.1.9",
-        "panpan76/logguer" : "master-7"
+        "php": ">=7.1.9",
+        "panpan76/logguer" : "dev-master-7"
     },
     "authors": [
         {
