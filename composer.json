@@ -1,6 +1,15 @@
 {
     "name": "panpan76/router",
     "license": "Apache-2.0",
+    "autoload": {
+        "psr-4": {
+            "Router\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">7.1.9",
+        "panpan76/logguer" : "master-7"
+    },
     "authors": [
         {
             "name": "Panpan76",
