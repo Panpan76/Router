@@ -35,7 +35,7 @@ class RequestTest extends TestCase{
     $user = new Class implements UserInterface{
         public function getUsername():string{ return 'toto'; }
         public function getRole():RoleInterface{ return new Class implements RoleInterface{
-          public function getRights(){
+          public function getRights():array{
             return array();
           }
         };

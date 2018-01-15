@@ -5,6 +5,8 @@ namespace Tests;
 use PHPUnit\Framework\TestCase;
 
 use Router\Route;
+use Router\UserInterface;
+use Router\RoleInterface;
 
 class RouteTest extends TestCase{
 
@@ -21,6 +23,59 @@ class RouteTest extends TestCase{
     $this->assertEquals($expected, $route->getPattern());
     $this->assertEquals('user', $route->getName());
     $this->assertEquals($args, $route->getArgs());
+  }
+
+
+  /**
+   * @covers Router\Route::__construct
+   * @covers Router\Route::setRights
+   * @covers Router\Route::canUser
+   */
+  public function testRightsNotStrict(){
+    $route = new Route('user', 'pattern', 'Controllers\User', 'user');
+    $route->setRights(array('right 1', 'right 2', 'right 3'));
+
+    $user = new Class implements UserInterface{
+        public function getUsername():string{ return 'toto'; }
+        public function getRole():RoleInterface{ return new Class implements RoleInterface{
+          public function getRights():array{
+            return array('right 2');
+          }
+        };
+      }
+    };
+    $this->assertTrue($route->canUser($user));
+  }
+
+  /**
+   * @covers Router\Route::__construct
+   * @covers Router\Route::setRights
+   * @covers Router\Route::canUser
+   */
+  public function testRightsStrict(){
+    $route = new Route('user', 'pattern', 'Controllers\User', 'user');
+    $route->setRights(array('right 1', 'right 2', 'right 3'), true);
+
+    $user = new Class implements UserInterface{
+        public function getUsername():string{ return 'toto'; }
+        public function getRole():RoleInterface{ return new Class implements RoleInterface{
+          public function getRights():array{
+            return array('right 2');
+          }
+        };
+      }
+    };
+
+    $user2 = new Class implements UserInterface{
+        public function getUsername():string{ return 'toto'; }
+        public function getRole():RoleInterface{ return new Class implements RoleInterface{
+          public function getRights():array{
+            return array('right 2', 'right 3', 'right 1');
+          }
+        };
+      }
+    };
+    $this->assertTrue($route->canUser($user2));
   }
 
   /**

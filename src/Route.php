@@ -8,6 +8,8 @@ class Route{
   private $controller;
   private $method;
   private $args;
+  private $rights;
+  private $strict;
 
   public function __construct(string $name, string $pattern, string $controller, string $method, array $args = array()){
     $this->name       = $name;
@@ -15,6 +17,27 @@ class Route{
     $this->controller = $controller;
     $this->method     = $method;
     $this->args       = $args;
+  }
+
+
+  public function setRights(array $rights, bool $strict = false){
+    $this->rights = $rights;
+    $this->strict = $strict;
+  }
+
+  public function canUser(UserInterface $user):bool{
+    $bool = true;
+    foreach($this->rights as $right){
+      if(in_array($right, $user->getRole()->getRights())){
+        if(!$this->strict){
+          return true;
+        }
+        $bool = true && $bool;
+      }else{
+        $bool = false;
+      }
+    }
+    return $bool;
   }
 
   /**
