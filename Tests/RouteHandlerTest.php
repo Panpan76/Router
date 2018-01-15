@@ -6,13 +6,32 @@ use PHPUnit\Framework\TestCase;
 
 use Router\RouteHandler;
 use Router\Route;
+use Router\Exceptions\RouteException;
 
 class RouteHandlerTest extends TestCase{
+
+
+  /**
+   * @covers Router\RouteHandler::__construct
+   * @covers Router\RouteHandler::checkNotEmpty
+   * @covers Router\RouteHandler::findRouteByName
+   * @covers Router\Exceptions\RouteException::__construct
+   */
+  public function testEmpty(){
+    $handler = new RouteHandler();
+    try{
+      $handler->findRouteByName('toto');
+    }catch(RouteException $e){
+      $this->assertEquals("No routes have been register", $e->getMessage());
+    }
+  }
+
 
   /**
    * @dataProvider providerForFindByNameOk
    * @covers Router\RouteHandler::__construct
    * @covers Router\RouteHandler::addRoute
+   * @covers Router\RouteHandler::checkNotEmpty
    * @covers Router\RouteHandler::findRouteByName
    */
   public function testFindByNameOk($routes, $name, $expected){
@@ -28,7 +47,9 @@ class RouteHandlerTest extends TestCase{
    * @dataProvider providerForFindByNameFail
    * @covers Router\RouteHandler::__construct
    * @covers Router\RouteHandler::addRoute
+   * @covers Router\RouteHandler::checkNotEmpty
    * @covers Router\RouteHandler::findRouteByName
+   * @covers Router\Exceptions\RouteException::__construct
    */
   public function testFindByNameFail($routes, $name){
     $handler = new RouteHandler();
@@ -37,8 +58,8 @@ class RouteHandlerTest extends TestCase{
     }
     try{
       $handler->findRouteByName($name);
-    }catch(\Exception $e){
-      $this->assertInstanceOf(\Exception::class, $e);
+    }catch(RouteException $e){
+      $this->assertEquals("No route found", $e->getMessage());
     }
   }
 
@@ -46,6 +67,7 @@ class RouteHandlerTest extends TestCase{
    * @dataProvider providerForFindByPatternOk
    * @covers Router\RouteHandler::__construct
    * @covers Router\RouteHandler::addRoute
+   * @covers Router\RouteHandler::checkNotEmpty
    * @covers Router\RouteHandler::findRouteByPattern
    */
   public function testFindByPatternOk($routes, $pattern, $expected){
@@ -61,7 +83,9 @@ class RouteHandlerTest extends TestCase{
    * @dataProvider providerForFindByPatternFail
    * @covers Router\RouteHandler::__construct
    * @covers Router\RouteHandler::addRoute
+   * @covers Router\RouteHandler::checkNotEmpty
    * @covers Router\RouteHandler::findRouteByPattern
+   * @covers Router\Exceptions\RouteException::__construct
    */
   public function testFindByPatternFail($routes, $pattern){
     $handler = new RouteHandler();
@@ -70,8 +94,8 @@ class RouteHandlerTest extends TestCase{
     }
     try{
       $handler->findRouteByPattern($pattern);
-    }catch(\Exception $e){
-      $this->assertInstanceOf(\Exception::class, $e);
+    }catch(RouteException $e){
+      $this->assertEquals("No route found", $e->getMessage());
     }
   }
 
